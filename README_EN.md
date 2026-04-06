@@ -15,7 +15,7 @@
 
 - ☯️ **Dual-Engine Chart Generation** — Utilizes `lunar-python` for accurate Eastern Bazi (Four Pillars, Dayun) and `kerykeion` for precise Western Astrology (Sun, Moon, Ascendant, Houses).
 - 🤖 **Agent-Native Prompts** — Tailor-made for OpenClaw and LLM agents to completely eliminate the "math hallucinations" usually present in AI fortune-telling.
-- 📚 **Deep Classical Analysis** — Forces the model to use 9 classical texts (e.g., *Yuanhai Ziping*, *Qiongtong Baodian*) for a massive, multi-faceted integration of macroscopic Eastern destiny trends and microscopic Western psychology.
+- 📚 **Deep Classical Analysis** — Forces the model to use 9 classical texts (e.g., *Yuanhai Ziping*, *Qiongtong Baodian*) for a massive, multi-faceted integration of macroscopic Eastern destiny trends and microscopic Western psychology. Newly introduced **Intimate Relationship Module (Venus/Moon x Day Pillar)** to pierce right through your soul.
 - 🛠️ **Automated Interactive Workflow** — Guides the user step-by-step to collect required details, fetching extensive metadata like NaYin, hidden stems, and DiShi.
 
 ## 🚀 Quick Start
