@@ -1,0 +1,3 @@
+.omc/
+.env*
+__pycache__/
