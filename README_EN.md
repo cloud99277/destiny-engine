@@ -14,6 +14,7 @@
 ## ✨ Features
 
 - ☯️ **Dual-Engine Chart Generation** — Utilizes `lunar-python` for accurate Eastern Bazi (Four Pillars, Dayun) and `kerykeion` for precise Western Astrology (Sun, Moon, Ascendant, Houses).
+- ⚖️ **Traditional Hellenistic Core** — Abandons modern astrology fluff. Strictly enforces Ptolemy's *Tetrabiblos* and Essential Dignities (Rulership, Exaltation, Detriment, Fall) to ensure rigorous and ruthless chart reading.
 - 🤖 **Agent-Native Prompts** — Tailor-made for OpenClaw and LLM agents to completely eliminate the "math hallucinations" usually present in AI fortune-telling.
 - 📚 **Deep Classical Analysis** — Forces the model to use 9 classical texts (e.g., *Yuanhai Ziping*, *Qiongtong Baodian*) for a massive, multi-faceted integration of macroscopic Eastern destiny trends and microscopic Western psychology. Newly introduced **Intimate Relationship Module (Venus/Moon x Day Pillar)** to pierce right through your soul.
 - 🛠️ **Automated Interactive Workflow** — Guides the user step-by-step to collect required details, fetching extensive metadata like NaYin, hidden stems, and DiShi.
@@ -56,9 +57,9 @@ python3 scripts/destiny_calc.py -y 1998 -m 7 -d 31 -H 4 -M 0 -g 1 --lat 27.76 --
 
 | Module | Responsibility |
 |--------|----------------|
-| `SKILL.md` | Core LLM Prompt (8-step analytical framework, East-West integration) |
+| `SKILL.md` | Core LLM Prompt (8-step framework, dual-track classical text enforcement) |
 | `destiny_calc.py` | Local calculator merging NASA JPL ephemeris and traditional lunar algorithms |
-| `references/` | Baseline textual rules for ancient destiny texts, WuXing, and ShiShen |
+| `references/` | Baseline textual rules containing Eastern texts and Western Traditional rules (Essential Dignities, Ptolemaic principles) |
 
 ## 🙏 Acknowledgments
 
