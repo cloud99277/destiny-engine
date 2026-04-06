@@ -15,6 +15,7 @@
 
 - ☯️ **Dual-Engine Chart Generation** — Utilizes `lunar-python` for accurate Eastern Bazi (Four Pillars, Dayun) and `kerykeion` for precise Western Astrology (Sun, Moon, Ascendant, Houses).
 - ⚖️ **Traditional Hellenistic Core** — Abandons modern astrology fluff. Strictly enforces Ptolemy's *Tetrabiblos* and Essential Dignities (Rulership, Exaltation, Detriment, Fall) to ensure rigorous and ruthless chart reading.
+- 📈 **100-Year Life K-Line Chart** — Built-in `k_line_chart.py` visual module that quantifies 100 years of destiny momentum into a stock-market style candlestick chart (Green for up, Red for down). Perfect for social media virality!
 - 🤖 **Agent-Native Prompts** — Tailor-made for OpenClaw and LLM agents to completely eliminate the "math hallucinations" usually present in AI fortune-telling.
 - 📚 **Deep Classical Analysis** — Forces the model to use 9 classical texts (e.g., *Yuanhai Ziping*, *Qiongtong Baodian*) for a massive, multi-faceted integration of macroscopic Eastern destiny trends and microscopic Western psychology. Newly introduced **Intimate Relationship Module (Venus/Moon x Day Pillar)** to pierce right through your soul.
 - 🛠️ **Automated Interactive Workflow** — Guides the user step-by-step to collect required details, fetching extensive metadata like NaYin, hidden stems, and DiShi.
