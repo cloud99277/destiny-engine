@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# 🔮 927-bazi-skill
+# 🔮 destiny-engine
 
 **The Ultimate Cyber Fortune Telling Agent Skill — East Meets West Dual-Core Destiny Engine**
 
@@ -33,7 +33,7 @@ pip3 install kerykeion
 Clone the repository into your Agent Skill directory (e.g. `~/.ai-skills/` or `~/.openclaw/skills/`):
 
 ```bash
-git clone https://github.com/cloud99277/927-bazi-skill ~/.ai-skills/927-bazi-skill
+git clone https://github.com/cloud99277/destiny-engine ~/.ai-skills/destiny-engine
 ```
 
 ### 📖 Usage

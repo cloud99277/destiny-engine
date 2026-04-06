@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# 🔮 927-bazi-skill
+# 🔮 destiny-engine
 
 **赛博算命终极形态——中西合璧双核命理大模型 Agent 技能**
 
@@ -33,7 +33,7 @@ pip3 install kerykeion
 将仓库 clone 到你的 Agent Skill 目录（如 `~/.ai-skills/` 或 `~/.openclaw/skills/`）：
 
 ```bash
-git clone https://github.com/cloud99277/927-bazi-skill ~/.ai-skills/927-bazi-skill
+git clone https://github.com/cloud99277/destiny-engine ~/.ai-skills/destiny-engine
 ```
 
 ### 📖 使用说明
