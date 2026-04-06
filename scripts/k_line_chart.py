@@ -2,108 +2,134 @@ import argparse
 import json
 import hashlib
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime, timedelta
+from matplotlib.patches import Rectangle
+from datetime import datetime
 import numpy as np
 import os
 
-def generate_trend(start_year, dayuns, bazi_str):
-    # Deterministic noise based on bazi
+def generate_candlesticks(start_year, dayuns, bazi_str):
     seed = int(hashlib.md5(bazi_str.encode('utf-8')).hexdigest(), 16) % 10000
     np.random.seed(seed)
     
     years = []
-    prices = []
+    opens, highs, lows, closes = [], [], [], []
     
-    # Starting base score
     current_price = 50.0 
     
-    # Create 100 years of data
-    for i in range(100):
+    for i in range(80): 
         current_year = start_year + i
-        years.append(datetime(current_year, 6, 1))
+        years.append(current_year)
         
-        # Check which dayun we are in
         dayun_index = 0
         for idx, d in enumerate(dayuns):
             if current_year >= d.get('year', 0):
                 dayun_index = idx
                 
-        # Dayun momentum (-2 to 3) based on hash of the ganzhi
         d_gz = dayuns[dayun_index].get('ganzhi', '')
-        if not d_gz:
-            d_momentum = 0
-        else:
-            d_hash = int(hashlib.md5(d_gz.encode()).hexdigest(), 16) % 100
-            d_momentum = (d_hash / 20.0) - 2.5 # -2.5 to +2.5
+        d_hash = int(hashlib.md5(d_gz.encode()).hexdigest(), 16) % 100 if d_gz else 50
+        d_momentum = (d_hash / 20.0) - 2.5 
             
-        # Yearly noise (LiuNian effect)
-        y_noise = np.random.normal(0, 5)
+        y_noise = np.random.normal(0, 6)
         
-        # Trend combination
-        current_price += d_momentum + y_noise
+        open_price = current_price
+        close_price = current_price + d_momentum + y_noise
         
-        # Normalize bounds
-        if current_price > 95: current_price = 95 - np.random.random()*5
-        if current_price < 10: current_price = 10 + np.random.random()*5
+        if close_price > 98: close_price = 98 - np.random.random()*5
+        if close_price < 10: close_price = 10 + np.random.random()*5
         
-        prices.append(current_price)
+        high_price = max(open_price, close_price) + abs(np.random.normal(0, 3))
+        low_price = min(open_price, close_price) - abs(np.random.normal(0, 3))
         
-    return years, prices
+        opens.append(open_price)
+        highs.append(high_price)
+        lows.append(low_price)
+        closes.append(close_price)
+        
+        current_price = close_price
+        
+    return years, opens, highs, lows, closes
 
-def plot_k_line(years, prices, output_path):
+def plot_k_line(years, opens, highs, lows, closes, output_path):
+    # Use default font but enable emoji via fallback if possible, or just skip CJK if font fails.
+    # To avoid font crash, we use generic sans-serif for now, relying on matplotlib's internal fallback.
+    plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'sans-serif']
+
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(14, 7))
     fig.patch.set_facecolor('#0d1117')
     ax.set_facecolor('#0d1117')
     
-    # Plot line
-    ax.plot(years, prices, color='#00ff9d', linewidth=2)
+    color_up = '#00ff9d'
+    color_down = '#ff4d4d'
     
-    # Fill under line
-    ax.fill_between(years, prices, 0, color='#00ff9d', alpha=0.1)
-    
-    # Add trend zones (Red for down, Green for up)
-    for i in range(1, len(prices)):
-        color = '#00ff9d' if prices[i] >= prices[i-1] else '#ff4d4d'
-        ax.plot(years[i-1:i+1], prices[i-1:i+1], color=color, linewidth=2.5)
+    for i in range(len(years)):
+        if closes[i] >= opens[i]:
+            color = color_up
+            lower = opens[i]
+            height = closes[i] - opens[i]
+        else:
+            color = color_down
+            lower = closes[i]
+            height = opens[i] - closes[i]
+            
+        ax.plot([years[i], years[i]], [lows[i], highs[i]], color=color, linewidth=1.5)
+        ax.add_patch(Rectangle((years[i]-0.4, lower), 0.8, height, facecolor=color, edgecolor=color))
         
-        # Draw volume-like bars at the bottom
-        bar_height = abs(prices[i] - prices[i-1]) * 2
-        ax.bar(years[i], bar_height, width=200, bottom=0, color=color, alpha=0.5)
+        vol_height = abs(closes[i] - opens[i]) + abs(highs[i] - lows[i])
+        ax.bar(years[i], vol_height, width=0.8, bottom=0, color=color, alpha=0.3)
 
-    # Styling
-    ax.set_ylim(0, 100)
-    ax.set_title("100-Year Destiny Trend (K-Line Projection)", color='white', fontsize=16, pad=20)
-    ax.set_ylabel("Destiny Momentum Index", color='gray')
+    ax.set_ylim(0, 110)
+    ax.set_xlim(years[0]-1, years[-1]+1)
     
-    # Grid
-    ax.grid(True, linestyle='--', alpha=0.2)
+    ax.text(years[0], 102, "Cyber Destiny: 100-Year Karma K-Line", 
+            color='white', fontsize=18, fontweight='bold')
+            
+    max_idx = np.argmax(highs)
+    min_idx = np.argmin(lows)
+    
+    drops = [opens[i] - closes[i] for i in range(len(closes))]
+    worst_drop_idx = np.argmax(drops)
+    
+    gains = [closes[i] - opens[i] for i in range(len(closes))]
+    best_gain_idx = np.argmax(gains)
+
+    ax.annotate('[God of Wealth]', 
+                xy=(years[max_idx], highs[max_idx]), xytext=(-30, 25),
+                textcoords='offset points', color='#00ff9d', fontsize=11,
+                arrowprops=dict(arrowstyle="->", color='#00ff9d', connectionstyle="arc3,rad=.2"))
+                
+    ax.annotate('[Mercury Retrograde / Doom]', 
+                xy=(years[min_idx], lows[min_idx]), xytext=(-40, -40),
+                textcoords='offset points', color='#ff4d4d', fontsize=11,
+                arrowprops=dict(arrowstyle="->", color='#ff4d4d', connectionstyle="arc3,rad=-.2"))
+                
+    ax.annotate('[Crazy Wage Slave]', 
+                xy=(years[worst_drop_idx], highs[worst_drop_idx]), xytext=(20, 20),
+                textcoords='offset points', color='yellow', fontsize=11,
+                arrowprops=dict(arrowstyle="->", color='yellow'))
+                
+    ax.annotate('[Take-off / Windfall]', 
+                xy=(years[best_gain_idx], lows[best_gain_idx]), xytext=(-50, -35),
+                textcoords='offset points', color='#00aaff', fontsize=11,
+                arrowprops=dict(arrowstyle="->", color='#00aaff'))
+
+    ax.grid(True, linestyle='--', alpha=0.15)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_color('#30363d')
     ax.spines['bottom'].set_color('#30363d')
+    ax.tick_params(colors='gray')
     
-    # Annotate Highest and Lowest points
-    max_idx = np.argmax(prices)
-    min_idx = np.argmin(prices)
+    ax.set_ylabel("Karma Index (0-100)", color='gray')
     
-    ax.annotate('Golden Era', xy=(years[max_idx], prices[max_idx]), xytext=(10, 10),
-                textcoords='offset points', color='#00ff9d', fontweight='bold',
-                arrowprops=dict(arrowstyle="->", color='#00ff9d'))
-                
-    ax.annotate('Pressure Test', xy=(years[min_idx], prices[min_idx]), xytext=(10, -20),
-                textcoords='offset points', color='#ff4d4d', fontweight='bold',
-                arrowprops=dict(arrowstyle="->", color='#ff4d4d'))
-
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='#0d1117')
     print(f"K-Line chart saved to {output_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--json", required=True, help="Path to destiny_calc.json output")
-    parser.add_argument("--out", default="life_k_line.png", help="Output image path")
+    parser.add_argument("--json", required=True)
+    parser.add_argument("--out", default="life_k_line_v2.png")
     args = parser.parse_args()
     
     with open(args.json, 'r') as f:
@@ -114,11 +140,7 @@ if __name__ == "__main__":
     bazi_dict = bazi_data.get('bazi', {})
     bazi_str = f"{bazi_dict.get('year')}{bazi_dict.get('month')}{bazi_dict.get('day')}{bazi_dict.get('time')}"
     
-    if not dayuns:
-        # mock dayuns if not exist
-        start_year = 2000
-    else:
-        start_year = dayuns[0].get('year', 2000)
+    start_year = dayuns[0].get('year', 2000) if dayuns else 2000
         
-    years, prices = generate_trend(start_year, dayuns, bazi_str)
-    plot_k_line(years, prices, args.out)
+    years, opens, highs, lows, closes = generate_candlesticks(start_year, dayuns, bazi_str)
+    plot_k_line(years, opens, highs, lows, closes, args.out)
